@@ -103,31 +103,33 @@ router.get('/:director_Id',(req,res)=>{
   });
 });
 /* PUT users listing*/
-router.put('/:director_id',(req,res, next)=>{
+//director güncelleme
+
+router.put('/:director_Id',(req,res, next)=>{
   const promise =director.findByIdAndUpdate(
-      req.params.movie_id,
+      req.params.director_Id,
       req.body,
       {
         new:true
       }
   );
 
-  promise.then((movie) =>{
-    if (!movie)
+  promise.then((director) =>{
+    if (!director)
       next({message:'director was not found'});
-    res.json(movie);
+    res.json(director);
   }).catch((err) =>{
     res.json(err);
   });
 });
 //DELETE users listing
-router.delete('/:director_id',(req,res, next)=>{
-  const promise =director.findByIdAndRemove(req.params.movie_id);
+router.delete('/:director_Id',(req,res, next)=>{
+  const promise =director.findByIdAndRemove(req.params.director_Id);
 
-  promise.then((movie) =>{
-    if (!movie)
-      next({message:'movie was not found', code:99});
-    res.json(movie);
+  promise.then((director) =>{
+    if (!director)
+      next({message:'director was not found', code:99});
+    res.json(director);
   }).catch((err) =>{
     res.json(err);
   });
