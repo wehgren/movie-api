@@ -1,8 +1,10 @@
 const express = require('express');
 const router = express.Router();
+const mongoose = require('mongoose');
 //models
 const director = require('../models/Directors');
 /* GET users listing. */
+//tüm yönetmenler
 router.get('/',(req,res)=>{
   const promise = director.aggregate([
     {
@@ -48,14 +50,55 @@ router.get('/',(req,res)=>{
     res.json(err);
   });
 });
-router.get('/:director_id',(req,res, next)=>{
-  const promise =director.findById(req.params.director_id);
+//id bazlı yönetmen arama
+router.get('/:director_Id',(req,res)=>{
+  const promise = director.aggregate([
+    {
+      $match: {
+        '_id': mongoose.Types.ObjectId(req.params.director_Id)
 
-  promise.then((movie) =>{
-    if (!movie)
-      next({message:'director was not found'});
-    res.json(movie);
-  }).catch((err) =>{
+      }
+    },
+    {
+      $lookup: {
+        from:'movies',
+        localField: '_id',
+        foreignField: 'director_Id',
+        as: 'movies'
+      }
+    },
+    {
+      $unwind: {
+        path: '$movies',
+        preserveNullAndEmptyArrays: true
+      }
+    },
+    {
+      $group: {
+        _id: {
+          _id: '$_id',
+          name: '$name',
+          surname: '$surname',
+          bio: '$bio',
+
+        },
+        movies: {
+          $push: '$movies'
+        }
+      }
+    },
+    {
+      $project: {
+        _id: '$_id._id',
+        name: '$_id.name',
+        surname: '$_id.surname',
+        movies:'$movies'
+      }
+    }
+  ]);
+  promise.then((data)=>{
+    res.json(data);
+  }).catch((err)=>{
     res.json(err);
   });
 });
