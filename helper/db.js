@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 //burada admin user bilgisi girilir
 module.exports = () =>{
-    mongoose.connect('mongodb+srv://admin-user:abcd1234@cluster0-mtail.mongodb.net/test?retryWrites=true');
+    mongoose.connect('mongodb+srv://admin-user:abcd1234@cluster0-qacxa.mongodb.net/test?retryWrites=true');
     mongoose.connection.on('open',() =>{
         console.log('MongoDB: connected');
     });
