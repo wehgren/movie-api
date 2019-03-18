@@ -4,7 +4,44 @@ const router = express.Router();
 const director = require('../models/Directors');
 /* GET users listing. */
 router.get('/',(req,res)=>{
-  const promise = director.find({ });
+  const promise = director.aggregate([
+    {
+      $lookup: {
+        from:'movies',
+        localField: '_id',
+        foreignField: 'director_Id',
+        as: 'movies'
+      }
+    },
+    {
+      $unwind: {
+        path: '$movies',
+        preserveNullAndEmptyArrays: true
+      }
+    },
+    {
+      $group: {
+        _id: {
+          _id: '$_id',
+          name: '$name',
+          surname: '$surname',
+          bio: '$bio',
+
+        },
+        movies: {
+          $push: '$movies'
+        }
+      }
+    },
+    {
+      $project: {
+        _id: '$_id._id',
+        name: '$_id.name',
+        surname: '$_id.surname',
+        movies:'$movies'
+      }
+    }
+  ]);
   promise.then((data)=>{
     res.json(data);
   }).catch((err)=>{
@@ -41,8 +78,8 @@ router.put('/:director_id',(req,res, next)=>{
   });
 });
 //DELETE users listing
-router.delete('/:movie_id',(req,res, next)=>{
-  const promise =Movie.findByIdAndRemove(req.params.movie_id);
+router.delete('/:director_id',(req,res, next)=>{
+  const promise =director.findByIdAndRemove(req.params.movie_id);
 
   promise.then((movie) =>{
     if (!movie)
