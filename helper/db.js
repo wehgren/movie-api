@@ -11,3 +11,4 @@ module.exports = () =>{
     mongoose.Promise = global.Promise;
 };
 
+//mongodb+srv://admin-user:abcd1234@cluster0-qacxa.mongodb.net/test?retryWrites=true

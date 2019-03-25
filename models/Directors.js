@@ -2,8 +2,16 @@ const mongoose= require('mongoose');
 const Schema = mongoose.Schema;
 
 const directorSchema = new Schema({
-    name: String,
-    surname: String,
+    name:{
+        type:String,
+        required: true,
+        maxlength: 15
+    },
+    surname: {
+        type: String,
+        required: true,
+        maxlength: 15
+    },
     bio : String,
     createdAt: {
         type: Date,
